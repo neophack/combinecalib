@@ -1206,6 +1206,7 @@ var data = {
                 console.log("select rect points", indices.length);
                 this.set_spec_points_color(indices, {x:1,y:0,z:0});
                 this.update_points_color();
+                return indices;
             },
 
             create_box_by_view_rect: function(x,y,w,h, camera, center){
@@ -1277,6 +1278,161 @@ var data = {
                 return this.add_box(center, scale, {x:0,y:0,z:rotation_z}, "Unknown", "");
             },
 
+            
+
+            create_plane_by_view_rect: function(x,y,w,h, camera, center){
+                var _self=this;
+                function shuffleSelf(array, size) {
+                    var index = -1,
+                        length = array.length,
+                        lastIndex = length - 1;
+             
+                    size = size === undefined ? length : size;
+                    while (++index < size) {
+                        // var rand = baseRandom(index, lastIndex),
+                        var rand = index + Math.floor( Math.random() * (lastIndex - index + 1));
+                        // console.log(rand);
+                        var value = array[rand];
+             
+                        array[rand] = array[index];
+             
+                        array[index] = value;
+                    }
+                    array.length = size;
+                    return array;
+                }
+               
+    
+                function ransac3d(points,inds,maxiter,distth){
+                    console.log(inds);
+                    var indicesResult = [];
+                    var vec=[];
+                    for (var i=0; i< maxiter; i++){
+                        var indices = [];
+                        var selinds=shuffleSelf(inds.concat(),3);
+                        console.log(selinds);
+
+                        var x1=points[selinds[0]*3], y1=points[selinds[0]*3+1], z1=points[selinds[0]*3+2];
+                        var x2=points[selinds[1]*3], y2=points[selinds[1]*3+1], z2=points[selinds[1]*3+2];
+                        var x3=points[selinds[2]*3], y3=points[selinds[2]*3+1], z3=points[selinds[2]*3+2];
+
+                        //plane formula ax + by + cz +d = 0
+                        var a = (y2-y1)*(z3-z1)-(z2-z1)*(y3-y1); //a=i=(y2−y1)(z3−z1)−(z2−z1)(y3−y1)
+                        var b = (z2-z1)*(x3-x1)-(x2-x1)*(z3-z1); //b=j=(z2-z1)(x3-x1)-(x2-x1)(z3-z1)
+                        var c = (x2-x1)*(y3-y1)-(y2-y1)*(x3-x1); //c=k=(x2−x1)(y3−y1)−(y2−y1)(x3−x1)
+                        var d = -(a*x1+b*y1+c*z1);
+
+                        // Measure distance between every point and fitted line
+                        // If distance is smaller than threshold count it as inlier
+                        for(var index=0; index < inds.length; index++)
+                        {
+                            if(selinds.indexOf(inds[index]) >0)
+                                continue;
+                            var x4=points[inds[index]*3], y4=points[inds[index]*3+1], z4=points[inds[index]*3+2]
+                            console.log(Math.abs(a*x4+b*y4+c*z4+d)/Math.sqrt(a*a+b*b+c*c));
+                            var dist = Math.abs(a*x4+b*y4+c*z4+d)/Math.sqrt(a*a+b*b+c*c);
+                            if(dist<=distth)
+                                indices.push(inds[index]);
+                        }
+
+                        if(indices.length>indicesResult.length)
+                        indicesResult = indices;    
+                        vec=[a,b,c,d,(x1+x2+x3)/3,(y1+y2+y3)/3,(z1+z2+z3)/3];
+
+                    }
+                    _self.set_spec_points_color(indices, {x:1,y:0,z:0});
+                    _self.update_points_color();
+                    return indicesResult,vec;
+                }
+
+                var euler = new THREE.Euler();
+                var vec = []
+                
+                var rotation_z = camera.rotation.z + Math.PI/2;
+
+                var points = this.points;
+                var pos_array = points.geometry.getAttribute("position").array;
+
+                var indices = [];
+                var p = new THREE.Vector3();
+
+                for (var i=0; i< pos_array.length/3; i++){
+                    p.set(pos_array[i*3], pos_array[i*3+1], pos_array[i*3+2]);
+                    p.project(camera);
+                    //p.x = p.x/p.z;
+                    //p.y = p.y/p.z;
+                    //console.log(p);
+                    if ((p.x > x) && (p.x < x+w) && (p.y>y) && (p.y<y+h) && (p.z>0)){
+                        indices.push(i);
+                    }
+                }
+
+                indices,vec=ransac3d(pos_array,indices,20,0.05);
+
+                var veclen=Math.sqrt(vec[0]*vec[0]+vec[1]*vec[1]+vec[2]*vec[2]);
+                var ax=new THREE.Vector3(vec[0]/veclen,vec[1]/veclen,vec[2]/veclen);//{'x':vec[0]/veclen,'y':vec[1]/veclen,'z':vec[2]/veclen};
+                var qt = new THREE.Quaternion();
+                qt.setFromUnitVectors(new THREE.Vector3(0,0,1),ax);
+                // qt.setFromUnitVectors(ax,new THREE.Vector3(0,0,1));
+                // qt.setFromAxisAngle(ax,0);
+                euler.setFromQuaternion(qt,"XYZ");
+
+                console.log("select rect points", indices.length);
+
+                //compute center, no need to tranform to box coordinates, and can't do it in this stage.
+                /*
+                var extreme = array_as_vector_index_range(pos_array, 3, indices);
+
+                var center = {
+                    x: (extreme.max[0]+extreme.min[0])/2,
+                    y: (extreme.max[1]+extreme.min[1])/2,
+                    z: (extreme.max[2]+extreme.min[2])/2,
+                };
+                */
+
+                var center = {x:vec[4],y:vec[5],z:vec[6]};
+
+                var trans = transpose(euler_angle_to_rotate_matrix({x:euler._x,y:euler._y,z:euler._z}, {x:0, y:0, z:0}), 4);
+
+                var relative_position = [];
+                indices.forEach(function(i){
+                //for (var i  = 0; i < pos.count; i++){
+                    var x = pos_array[i*3];
+                    var y = pos_array[i*3+1];
+                    var z = pos_array[i*3+2];
+                    var p = [x-center.x, y-center.y, z-center.z, 1];
+                    var tp = matmul(trans, p, 4);
+                    relative_position.push([tp[0],tp[1],tp[2]]);
+                });
+
+                var relative_extreme = vector_range(relative_position);
+                // var scale = {
+                //     x: relative_extreme.max[0] - relative_extreme.min[0],
+                //     y: relative_extreme.max[1] - relative_extreme.min[1],
+                //     z: relative_extreme.max[2] - relative_extreme.min[2],
+                // };
+                var scale = {
+                    x: 0.5,
+                    y: 1.0,
+                    z: 0.1,
+                };
+
+                // enlarge scale a little
+
+
+                // adjust center
+                // this.translate_box_position(center, euler._x, "x", relative_extreme.min[0] + scale.x/2);
+                // this.translate_box_position(center, euler._y, "y", relative_extreme.min[1] + scale.y/2);
+                // this.translate_box_position(center, euler._z, "z", relative_extreme.min[2] + scale.z/2);
+                
+
+                scale.x += 0.02;
+                scale.y += 0.02;
+                scale.z += 0.02;
+
+                return this.add_box(center, scale, {x:euler._x,y:euler._y,z:euler._z}, "Unknown", "");
+            },
+     
             translate_box_position: function(pos, theta, axis, delta){
                 switch (axis){
                     case 'x':

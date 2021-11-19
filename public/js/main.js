@@ -1028,12 +1028,14 @@ function handleSelectRect(x,y,w,h){
 
     var center_pos = get_screen_location_in_world(x+w/2, y+h/2);
     
-    var box = data.world.create_box_by_view_rect(x,y,w,h, views[0].camera, center_pos);
+    // var box = data.world.create_box_by_view_rect(x,y,w,h, views[0].camera, center_pos);
+    var box = data.world.create_plane_by_view_rect(x,y,w,h, views[0].camera, center_pos);
+    
     scene.add(box);
        
     image_manager.add_box(box);
     
-    auto_shrink_box(box);
+    // auto_shrink_box(box);
     
     // guess obj type here
     
@@ -1044,12 +1046,12 @@ function handleSelectRect(x,y,w,h){
     select_bbox(box);
     on_box_changed(box);
 
-    auto_rotate_xyz(box, function(){
-        box.obj_type = guess_obj_type_by_dimension(box.scale);
-        floatLabelManager.set_object_type(box.obj_local_id, box.obj_type);
-        floatLabelManager.update_label_editor(box.obj_type, box.obj_track_id);
-        on_box_changed(box);
-    });
+    // auto_rotate_xyz(box, function(){
+    //     box.obj_type = guess_obj_type_by_dimension(box.scale);
+    //     floatLabelManager.set_object_type(box.obj_local_id, box.obj_type);
+    //     floatLabelManager.update_label_editor(box.obj_type, box.obj_track_id);
+    //     on_box_changed(box);
+    // });
 
     
     
@@ -1368,22 +1370,41 @@ function save_box_info(box){
     }
 }
 
+function translateBoxInBoxCoord(rotation, t)
+{
+    // euler 
+    let euler = new THREE.Euler(rotation.x, rotation.y, rotation.z, "XYZ")
+
+    let trans  = new THREE.Vector3(t.x, t.y, t.z).applyEuler(euler);
+
+    return trans;
+}
 
 function translate_box(box, axis, delta){
-    switch (axis){
-        case 'x':
-            box.position.x += delta*Math.cos(box.rotation.z);
-            box.position.y += delta*Math.sin(box.rotation.z);
-            break;
-        case 'y':
-            box.position.x += delta*Math.cos(Math.PI/2 + box.rotation.z);
-            box.position.y += delta*Math.sin(Math.PI/2 + box.rotation.z);  
-            break;
-        case 'z':
-            box.position.z += delta;
-            break;
+    let t = {x:0, y:0, z:0};
 
-    }
+        t[axis] = delta;
+
+        // switch (axis){
+        //     case 'x':
+
+        //         box.position.x += delta*Math.cos(box.rotation.z);
+        //         box.position.y += delta*Math.sin(box.rotation.z);
+        //         break;
+        //     case 'y':
+        //         box.position.x += delta*Math.cos(Math.PI/2 + box.rotation.z);
+        //         box.position.y += delta*Math.sin(Math.PI/2 + box.rotation.z);  
+        //         break;
+        //     case 'z':
+        //         box.position.z += delta;
+        //         break;
+
+        // }
+
+        let trans = translateBoxInBoxCoord(box.rotation, t);
+        box.position.x += trans.x;
+        box.position.y += trans.y;
+        box.position.z += trans.z;
 }
 
 // axix, xyz, action: scale, move, direction, up/down
