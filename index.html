@@ -323,6 +323,32 @@
 		  </div>
 
 		<script src="/static/js/lib/ml/tf.min.js"></script>
-		<script type="module"  src="/static/js/main.js"></script>		
+		<script type="module"  src="/static/js/main.js"></script>	
+		<script src="/static/js/svg-pan-zoom.js"></script>
+		<script>
+			// Don't use window.onLoad like this in production, because it can only listen to one function.
+			window.onload = function() {
+			  // Expose to window namespase for testing purposes
+			  window.zoomTiger = svgPanZoom('#maincanvas-svg', {
+				zoomEnabled: true,
+				controlIconsEnabled: true,
+				fit: true,
+				center: true,
+				// viewportSelector: document.getElementById('demo-tiger').querySelector('#g4') // this option will make library to misbehave. Viewport should have no transform attribute
+			  });
+			  var lastwidth = 0;
+              var checkResize = function() {
+				var c = document.getElementById("maincanvas-wrapper");
+				if (c.clientWidth != lastwidth) {
+					window.zoomTiger.resize();
+					window.zoomTiger.fit();
+					window.zoomTiger.center();
+					lastwidth=c.clientWidth;
+				}
+			  }
+			  var timer = setInterval(checkResize, 300);
+			};
+		</script>	
+
 	</body>
 </html>

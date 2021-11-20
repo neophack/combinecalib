@@ -44,6 +44,22 @@ function to_viewbox_coord(x, y) {
 
 }
 
+function to_viewbox_coord2(x, y) {
+    var div = document.getElementById("maincanvas-svg").getBoundingClientRect();
+    var vp = document.getElementById("svg-image").getBoundingClientRect();
+    
+    var x0=vp.left - div.left;
+    var y0=vp.top - div.top;
+
+    var x1 = x - x0;
+    var y1 = y - y0;
+
+    x = Math.round(x1 * 1920 / vp.width);
+    y = Math.round(y1 * 1080 / vp.height);
+    return [x, y];
+
+}
+
 function center_crop(x, y) {
     var img = data.world.images.active_image(); //document.getElementById("camera");
     if (img && (img.naturalWidth > 0)) {
@@ -86,7 +102,7 @@ function center_crop(x, y) {
 }
 
 function on_move(e) {
-    var p = to_viewbox_coord(e.layerX, e.layerY);
+    var p = to_viewbox_coord2(e.layerX, e.layerY);
     var x = p[0];
     var y = p[1];
 
@@ -101,7 +117,7 @@ function on_move(e) {
 }
 
 function on_click(e) {
-    var p = to_viewbox_coord(e.layerX, e.layerY);
+    var p = to_viewbox_coord2(e.layerX, e.layerY);
     var x = p[0];
     var y = p[1];
     console.log(x, y);
