@@ -77,9 +77,15 @@ def psr_to_xyz(p,s,r):
     #     [-x, y, -z, 1],   [-x, -y, -z, 1],  #rear-left-bottom, rear-right-bottom
     #     [-x, -y, z, 1],   [-x, y, z, 1],  #rear-right-top,   rear-left-top
     # ])
+    # local_coord=np.array([
+        
+    #     [-x, y, z, 1],[-x, -y, z, 1],[-x, -y, -z, 1],[-x, y, -z, 1]
+
+    # ])
+
     local_coord=np.array([
         
-        [-x, y, z, 1],[-x, -y, z, 1],[-x, -y, -z, 1],[-x, y, -z, 1]
+        [x, y, z, 1],[x, -y, z, 1],[-x, -y, z, 1],[-x, y, z, 1]
 
     ])
     print(local_coord.T)
@@ -167,17 +173,17 @@ class Root(object):
       return interpolate_num
 
 
-    # data  N*3 numpy array
-    @cherrypy.expose    
-    @cherrypy.tools.json_out()
-    def predict_rotation(self):
-      cl = cherrypy.request.headers['Content-Length']
-      rawbody = cherrypy.request.body.read(int(cl))
+    # # data  N*3 numpy array
+    # @cherrypy.expose    
+    # @cherrypy.tools.json_out()
+    # def predict_rotation(self):
+    #   cl = cherrypy.request.headers['Content-Length']
+    #   rawbody = cherrypy.request.body.read(int(cl))
       
-      data = json.loads(rawbody)
+    #   data = json.loads(rawbody)
       
-      return {"angle": rotation.predict(data["points"])}
-      #return {}
+    #   return {"angle": rotation.predict(data["points"])}
+    #   #return {}
 
     @cherrypy.expose    
     @cherrypy.tools.json_out()
@@ -239,7 +245,7 @@ class Root(object):
           # poly=poly[::2,:]
          
           polycenter=np.mean(poly, axis=0).reshape(-1,2)
-          print(poly,polycenter)
+          print("poly,polycenter",poly,polycenter)
           if len(imgc):
               imgc=np.vstack((imgc,poly))
               imgcenter=np.vstack((imgcenter,polycenter))
@@ -254,7 +260,7 @@ class Root(object):
       # imgc=np.vstack((imgc,imgc))
       # imgc=imgc[::2,]
       y_data=imgc
-      print(x_data,y_data)
+      print("x_data,y_data",x_data,y_data)
       #print("shape:",x_data.shape,y_data.shape)
 
       xx=tf.placeholder(tf.float32,[None,4])

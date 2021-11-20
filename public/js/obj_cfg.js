@@ -13,7 +13,7 @@ var obj_type_map = {
     // Tram:           {color: '#00ffff',  size:[10., 2.8, 3]},
     // Animal:         {color: '#00aaff',  size:[1.6, 0.6, 1.2]},
     // Misc:           {color: '#008888',  size:[4.5, 1.8, 1.5]},
-    Plane:          {color: '#00ff00',  size:[0.5, 0.1, 1.0]},
+    Plane:          {color: '#00ff00',  size:[0.75, 0.5, 0.05]},
     Unknown:        {color: '#008888',  size:[4.5, 1.8, 1.5]},
 }
 

@@ -2,6 +2,18 @@
 
 ![calib](./doc/calib.png)
 
+## 操作说明
+
+标定需要在图像上标注标定板边框，从左上角顺时针点4点
+
+需要标注点云，箭头向上为标定板上方，第一个小窗口为标定板平面
+
+删除图像框，点击file->remove polygons
+
+标定点击calibration
+
+结果在F12的console输出，点击save cal
+
 # SUSTechPOINTS: Point Cloud 3D Bounding Box Annotation Tool
 
 ![screenshot](./doc/pcd_label.png)

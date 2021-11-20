@@ -1412,9 +1412,9 @@ var data = {
                 //     z: relative_extreme.max[2] - relative_extreme.min[2],
                 // };
                 var scale = {
-                    x: 0.5,
-                    y: 1.0,
-                    z: 0.1,
+                    x: 0.75,
+                    y: 0.5,
+                    z: 0.05,
                 };
 
                 // enlarge scale a little
