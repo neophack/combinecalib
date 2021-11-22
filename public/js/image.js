@@ -407,7 +407,7 @@ function render_2d_image() {
                 polyssvg.appendChild(circle);
                 circle.setAttribute("r", "10");
                 // circle.setAttribute("fill", "red");
-                circle.setAttribute("stroke","black");
+                circle.setAttribute("stroke","pink");
                 // circle.setAttribute("stroke-width","1");
                 circle.setAttribute("cx", Math.round(polys[k].poly.points[0] * trans_ratio.x));
                 circle.setAttribute("cy", Math.round(polys[k].poly.points[1] * trans_ratio.y));
@@ -524,6 +524,15 @@ function box_to_svg(box, box_corners, trans_ratio, selected) {
             return String(x) + "," + y;
         })
     )
+
+    var circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+    svg.appendChild(circle);
+    circle.setAttribute("r", "5");
+    // circle.setAttribute("fill", "red");
+    circle.setAttribute("stroke","yellow");
+    // circle.setAttribute("stroke-width","1");
+    circle.setAttribute("cx", (imgfinal[0]+imgfinal[6])/2);
+    circle.setAttribute("cy", (imgfinal[1]+imgfinal[7])/2);
 
     /*
     var back_panel =  document.createElementNS("http://www.w3.org/2000/svg", 'polygon');
@@ -833,11 +842,14 @@ var image_manager = {
                     return String(x) + "," + y;
                 })
             )
-
+            
+            var circle = children[1];
+            circle.setAttribute("cx", imgfinal[0]);
+            circle.setAttribute("cy", imgfinal[1]);
 
 
             for (var i = 0; i < 4; ++i) {
-                var line = children[1 + i];
+                var line = children[2 + i];
                 line.setAttribute("x1", imgfinal[(4 + i) * 2]);
                 line.setAttribute("y1", imgfinal[(4 + i) * 2 + 1]);
                 line.setAttribute("x2", imgfinal[(4 + (i + 1) % 4) * 2]);
@@ -846,7 +858,7 @@ var image_manager = {
 
 
             for (var i = 0; i < 4; ++i) {
-                var line = children[5 + i];
+                var line = children[6 + i];
                 line.setAttribute("x1", imgfinal[i * 2]);
                 line.setAttribute("y1", imgfinal[i * 2 + 1]);
                 line.setAttribute("x2", imgfinal[(i + 4) * 2]);
