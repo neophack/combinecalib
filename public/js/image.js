@@ -531,8 +531,10 @@ function box_to_svg(box, box_corners, trans_ratio, selected) {
     // circle.setAttribute("fill", "red");
     circle.setAttribute("stroke","yellow");
     // circle.setAttribute("stroke-width","1");
-    circle.setAttribute("cx", (imgfinal[0]+imgfinal[6])/2);
-    circle.setAttribute("cy", (imgfinal[1]+imgfinal[7])/2);
+    circle.setAttribute("cx", imgfinal[6]);
+    circle.setAttribute("cy", imgfinal[7]);
+    // circle.setAttribute("cx", (imgfinal[0]+imgfinal[6])/2);
+    // circle.setAttribute("cy", (imgfinal[1]+imgfinal[7])/2);
 
     /*
     var back_panel =  document.createElementNS("http://www.w3.org/2000/svg", 'polygon');
@@ -844,8 +846,8 @@ var image_manager = {
             )
             
             var circle = children[1];
-            circle.setAttribute("cx", imgfinal[0]);
-            circle.setAttribute("cy", imgfinal[1]);
+            circle.setAttribute("cx", imgfinal[6]);
+            circle.setAttribute("cy", imgfinal[7]);
 
 
             for (var i = 0; i < 4; ++i) {
