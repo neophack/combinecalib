@@ -13,6 +13,8 @@ class MovableView
 
         let movableUi = document.getElementById("move-handle-wrapper");
 
+       
+
         dragableUi.addEventListener("mousedown", (event)=>{
             if (event.which == 1 && event.currentTarget == event.target)
             {
@@ -75,6 +77,12 @@ class PopupDialog extends MovableView
             this.hide();
         };
         
+        this.ui.addEventListener('keydown', event => {
+            if (event.ctrlKey && 'asdv'.indexOf(event.key) !== -1) {
+              event.preventDefault()
+            }
+        })
+
         this.ui.addEventListener("keydown", (event)=>{
 
             if (event.key == 'Escape'){

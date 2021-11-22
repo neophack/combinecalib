@@ -3,6 +3,7 @@ import {psr_to_xyz} from "./util.js"
 import {data} from "./data.js"
 import {load_obj_ids_of_scene} from "./obj_id_list.js"
 import {header} from "./header.js"
+import { logger } from "./log.js";
 
 function save_annotation(done){
     var bbox_annotations=[];
@@ -66,6 +67,7 @@ function save_annotation(done){
     
         if (this.status == 200) {
             console.log("save annotation finished.");
+            logger.log("save annotation finished.");
             if(done){
                 done();
             }
