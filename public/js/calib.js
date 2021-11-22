@@ -2,6 +2,7 @@ import { data } from "./data.js"
 import { rotation_matrix_to_euler_angle, euler_angle_to_rotate_matrix } from "./util.js"
 import { render_2d_image, update_image_box_projection } from "./image.js"
 import { selected_box } from "./main.js"
+import { logger } from "./log.js";
 
 var euler_angle = { x: 0, y: 0, z: 0 };
 var translate = { x: 0, y: 0, z: 0 };
@@ -29,7 +30,10 @@ function save_calibration() {
     console.log(extrinsicstr);
     console.log(euler_angle, translate);
 
-    console.log("restoreed matrix", euler_angle_to_rotate_matrix(euler_angle, translate));
+    console.log(`restoreed matrix ${ euler_angle_to_rotate_matrix(euler_angle, translate)}`);
+    
+    logger.log(`restoreed matrix ${ extrinsicstr}`);
+    logger.show();  // show the log window
 
 }
 
@@ -68,7 +72,8 @@ function run_calibration() {
                 
             }else {
                 extrinsic=JSON.parse(this.responseText).extrinsic;
-                console.log("extrinsic1",extrinsic);       
+                console.log("extrinsic1",extrinsic);    
+                
             }
             euler_angle = rotation_matrix_to_euler_angle(extrinsic);
             translate = {

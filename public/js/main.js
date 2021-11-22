@@ -21,6 +21,8 @@ import {view_handles, on_x_direction_changed, on_y_direction_changed, on_z_direc
 import {ml} from  './ml.js'
 import { auto_rotate_xyz } from './box_op.js';
 
+import {logger, create_logger} from "./log.js";
+
 var sideview_enabled = true;
 var container;
 
@@ -55,6 +57,9 @@ load_data_meta();
 add_global_obj_type();
 
 function init() {
+
+    create_logger(document.querySelector("#log-wrapper"), document.querySelector("#log-button"));
+
     document.body.addEventListener('keydown', event => {
         if (event.ctrlKey && 'asdv'.indexOf(event.key) !== -1) {
           event.preventDefault()

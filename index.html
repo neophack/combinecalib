@@ -39,6 +39,14 @@
 			<text id="changed-mark"></text>
 			<text id="box"></text>			
 			<text id="ref-obj"></text>
+
+			<div id="log-button" class="ui-button">
+				<svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" id="log-svg" class="svg-button">
+					<g>
+						<circle cx = 12 cy=12 r=4 />										
+					</g>
+				</svg>
+			</div>
 		</div>
 		
 		<!-- div id="image"></div -->
@@ -225,7 +233,7 @@
 				<table>
 						<tr>
 							<td><div class="v-m-item-icon"  id="z-v-t-up"><span class="ui-icon ui-icon-arrow-1-se"></span></div></td>
-							<td><div class="v-m-item-icon"  id="z-v-t-up"><span class="ui-icon ui-icon-arrowstop-1-s"></span></div></td>
+							<td><div class="v-m-item-iconlog-svg"  id="z-v-t-up"><span class="ui-icon ui-icon-arrowstop-1-s"></span></div></td>
 							<td><div class="v-m-item-icon"  id="z-v-t-up"><span class="ui-icon ui-icon-arrow-1-sw"></span></div></td>
 						</tr>
 						<tr>
@@ -321,6 +329,42 @@
 			</div>
   
 		  </div>
+
+		  <div id="log-wrapper" class="popup-window-wrapper" tabindex='-1'>
+			<div id="view">
+				<div id="header">
+					<span id="title">Log</span>
+					<div id="buttons">
+						<!-- <div id="btn-restore" class="ui-button"  title="restore">
+							<svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="svg-button"><g>
+								<rect x = 6 y = 6 width=12 height=12></rect>
+							</g></svg>
+						</div>
+						<div id="btn-maximize" class="ui-button"  title="maximize">
+							<svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="svg-button"><g>
+								<rect x = 4 y = 4 width=16 height=16></rect>
+							</g></svg>
+						</div> -->
+
+						<div id="btn-clear" class="ui-button"  title="clear logs">
+							<svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="svg-button"><g>
+								<circle cx = 12 cy=12 r= 8 />
+								<polyline points="7 7 17 17" />
+							</g></svg>
+						</div>
+						<div id="btn-exit" class="ui-button"  title="exit">
+							<svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="svg-button"><g>
+								<path d="M4 4 L 20 20 M 20 4 L 4 20"></path>
+							</g></svg>
+						</div>
+					</div>
+				</div>
+				<div id="content">
+				</div>
+			</div>
+		</div>
+		<div id="move-handle-wrapper">
+		</div>
 
 		<script src="/static/js/lib/ml/tf.min.js"></script>
 		<script type="module"  src="/static/js/main.js"></script>	
