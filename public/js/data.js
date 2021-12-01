@@ -1324,13 +1324,14 @@ var data = {
 
                         // Measure distance between every point and fitted line
                         // If distance is smaller than threshold count it as inlier
+                        var sqrt_abc=Math.sqrt(a*a+b*b+c*c);
                         for(var index=0; index < inds.length; index++)
                         {
                             if(selinds.indexOf(inds[index]) >0)
                                 continue;
                             var x4=points[inds[index]*3], y4=points[inds[index]*3+1], z4=points[inds[index]*3+2]
-                            console.log(Math.abs(a*x4+b*y4+c*z4+d)/Math.sqrt(a*a+b*b+c*c));
-                            var dist = Math.abs(a*x4+b*y4+c*z4+d)/Math.sqrt(a*a+b*b+c*c);
+                            // console.log(Math.abs(a*x4+b*y4+c*z4+d)/Math.sqrt(a*a+b*b+c*c));
+                            var dist = Math.abs(a*x4+b*y4+c*z4+d)/sqrt_abc;
                             if(dist<=distth)
                                 indices.push(inds[index]);
                         }

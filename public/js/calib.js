@@ -31,7 +31,7 @@ function save_calibration() {
     console.log(euler_angle, translate);
 
     console.log(`restoreed matrix ${ euler_angle_to_rotate_matrix(euler_angle, translate)}`);
-    
+
     logger.log(`restoreed matrix ${ extrinsicstr}`);
     logger.show();  // show the log window
 
@@ -73,7 +73,7 @@ function run_calibration() {
             }else {
                 extrinsic=JSON.parse(this.responseText).extrinsic;
                 console.log("extrinsic1",extrinsic);    
-                
+                logger.log("calibration finished!!");
             }
             euler_angle = rotation_matrix_to_euler_angle(extrinsic);
             translate = {
